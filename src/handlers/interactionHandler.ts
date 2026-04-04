@@ -1,5 +1,6 @@
 import { and, eq } from 'drizzle-orm';
 import type { ButtonInteraction, ChatInputCommandInteraction, Interaction } from 'discord.js';
+import { handleGiveawayListPagination } from '../commands/giveaway/list.js';
 import { db } from '../db/client.js';
 import { giveaways } from '../db/schema.js';
 import { handleCommandInteraction } from './commandHandler.js';
@@ -42,6 +43,9 @@ export const handleInteraction = async (interaction: Interaction): Promise<void>
       return;
     }
     if (interaction.isButton()) {
+      if (await handleGiveawayListPagination(interaction)) {
+        return;
+      }
       await handleEnterButton(interaction);
     }
   } catch (error) {
